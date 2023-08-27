@@ -26,6 +26,7 @@ jobs:
           command: |
             echo "This is an integration step"
             exit 1
+            exit 0
 
   prod:
     docker:
@@ -39,6 +40,16 @@ workflows:
   django:
     jobs:
       - build
-      - test
-      - integration
-      - prod
+      - test:
+          requires:
+            - build
+      - integration:
+          requires:
+            - test
+      - prod:
+          requires:
+            - integration
+    filters:
+      branches:
+        only:
+          - main
